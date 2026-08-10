@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  userName : {
+  username : {
     type : String,
     // required : true
   },
-  Email : {
+  email : {
     type : String,
-    required : true
+    required : true,
+    unique : true
   },
-  PassWord : {
-    type : String,
-    enum : ['pending', 'completed'],
-    default : 'pending'
-  },
+  password: {
+    type: String,
+    required: true
+},
   list : [{
     type : mongoose.Schema.Types.ObjectId,
     ref : 'List'
@@ -21,4 +21,4 @@ const userSchema = new mongoose.Schema({
 }
 );
 
-modules.export = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

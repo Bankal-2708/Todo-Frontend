@@ -18,7 +18,7 @@ const listSchema = new mongoose.Schema({
       type : mongoose.Schema.Types.ObjectId,
       ref : 'User'
     }]
-}
+},{timestamps : true}
 );
 
 modules.export = mongoose.model("List", listSchema);
