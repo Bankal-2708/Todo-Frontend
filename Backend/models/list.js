@@ -21,4 +21,4 @@ const listSchema = new mongoose.Schema({
 },{timestamps : true}
 );
 
-modules.export = mongoose.model("List", listSchema);
+module.exports = mongoose.model("List", listSchema);
