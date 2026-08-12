@@ -62,7 +62,6 @@ router.put("/updateTask/:id", async (req, res) => {
       });
     }
 
-
     const list = await List.findByIdAndUpdate(req.params.id, { title, description, status }, {
       new: true
     });
@@ -82,5 +81,59 @@ router.put("/updateTask/:id", async (req, res) => {
     });
   }
 });
+
+// delete 
+
+router.delete("/deleteTask/:id", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // if user Find 
+    const existingUser = await User.findOneAndUpdate({ email }, { $pull: { list: req.params.id } });
+    if (!existingUser) {
+      return res.status(404).json({
+        error: "User not found"
+      });
+    }
+
+    await List.findByIdAndDelete(req.params.id).then(() =>
+      res.status(200).json({ message: "Task Deleted Successfully" })
+    );
+
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message
+    });
+  }
+});
+
+// get task 
+
+router.get('/getTask/:id', async (req, res) => {
+  try {
+
+    const list = await List.find({
+      user: req.params.id
+    }).sort({createdAt : -1}); // sort by createdAt in descending order
+
+    if (list.length !== 0) {
+      res.status(200).json({
+      message: "Task fetched successfully",
+      list: list
+    });
+    }else {
+      res.status(404).json({
+        message: "No task found"
+      });
+    }
+
+  } catch (error) {
+
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+});
+
 
 module.exports = router;
