@@ -12,3 +12,6 @@ list.js         → Task CRUD
 .gitignore      → Ignore files
 package.json    → Dependencies/scripts
 package-lock    → Exact dependency versions
+
+
+ 

@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex items-center justify-center max-w  mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -17,7 +19,9 @@ function Home() {
           todo app. The World's #1 task manager app.
         </p>
 
-        <button className="mt-5 bg-amber-700 rounded-md py-2 px-2 font-semibold text-xl text-white hover:bg-orange-500">
+        <button
+        onClick={()=>{navigate("/todo")}} 
+        className="mt-5 bg-amber-700 rounded-md py-2 px-2 font-semibold text-xl text-white hover:bg-orange-500">
           Make Todo List
         </button>
 

@@ -5,6 +5,7 @@ import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 sm:mt-0 mt-15">
 
@@ -47,16 +48,32 @@ function SignUp() {
           </div>
 
 
-          <div className="mb-5">
-            <label className="block font-medium mb-2">
-              Password
-            </label>
+          <div className='relative'>
+            <div className="mb-5">
 
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-600"
-            />
+              <label className="block font-medium mb-2">
+                Password
+              </label>
+
+              <div className="relative">
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <FiEye /> : < FiEyeOff/>}
+                </button>
+
+              </div>
+
+            </div>
           </div>
 
 
@@ -76,7 +93,7 @@ function SignUp() {
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showConfirmPassword ? <FiEye />: <FiEyeOff />  }
+              {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
             </button>
 
           </div>
