@@ -13,7 +13,8 @@ function Todo() {
   const submit = () => {
     const newTodo = {
       id: Date.now(),
-      ...inputs
+      ...inputs,
+      createdAt:new Date().toISOString()
     }
     setArray([...array, newTodo]);
     setInputs({ title: "", description: "", status: "pending" })
@@ -22,7 +23,7 @@ function Todo() {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-10 px-4">
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
 
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800">
