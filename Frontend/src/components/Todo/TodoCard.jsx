@@ -2,7 +2,7 @@ import React from "react";
 import { FiEdit2, FiCalendar, FiClock } from "react-icons/fi";
 import { AiFillDelete } from "react-icons/ai";
 
-function TodoCard({ item }) {
+function TodoCard({ item, index, deleteTask}) {
   const isCompleted = item.status === "completed";
 
   const date = new Date(item.createdAt);
@@ -69,6 +69,7 @@ function TodoCard({ item }) {
             className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 cursor-pointer hover:scale-110
             hover:shadow-lg transition duration-200"
             title="Edit Todo"
+            onClick={()=>{console.log("edit : ", index)}}
           >
             <FiEdit2 size={18} />
 
@@ -76,6 +77,7 @@ function TodoCard({ item }) {
           <button
             className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 cursor-pointer hover:scale-110 hover:shadow-lg transition duration-200"
             title="Delete Todo"
+            onClick={()=>deleteTask(index)}
           >
 
             <AiFillDelete size={18} />

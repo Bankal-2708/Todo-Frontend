@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import TodoCard from "./TodoCard";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function Todo() {
   const [inputs, setInputs] = useState({ title: "", description: "", status: "pending" });
@@ -11,17 +13,34 @@ function Todo() {
     setInputs({ ...inputs, [name]: value })
   }
   const submit = () => {
-    const newTodo = {
-      id: Date.now(),
-      ...inputs,
-      createdAt:new Date().toISOString()
+    if (inputs.title === "" || inputs.description === "") {
+      toast.error("title and description can't be empty!");
+      return;
+    } else {
+      const newTodo = {
+        id: Date.now(),
+        ...inputs,
+        createdAt: new Date().toISOString()
+
+      }
+      setArray([...array, newTodo]);
+      setInputs({ title: "", description: "", status: "pending" })
+      // console.log("New Todo:", array);
+      toast.success("Your task has been added");
+      toast.error("Your task is not saved ! Please LogIn");
     }
-    setArray([...array, newTodo]);
-    setInputs({ title: "", description: "", status: "pending" })
-    // console.log("New Todo:", array);
+
+  }
+  const deleteTask = (index) => {
+    // console.log("Task deleted : ",index );
+    // Array.splice(index, "1");
+    // setArray([...array]); 
+    setArray(prev => prev.filter((_, i) => i !== index));
+    toast.success("Your task has been deleted");
   }
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-10 px-4">
+      <ToastContainer />
 
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
 
@@ -117,13 +136,14 @@ function Todo() {
             </p>
 
           </div>
-        ) : (<div className="max-w-4xl mx-auto space-y-4">
+        ) : (
+          <div className="max-w-4xl mx-auto space-y-4"  >
 
-          {array.map((item) => (
-            <TodoCard item={item} key={item.id} />
-          ))}
+            {array.map((item, index) => (
+              <TodoCard item={item} key={item.id} todoId={item.id} index={index} deleteTask={deleteTask} />
+            ))}
 
-        </div>
+          </div>
         )}
 
       </div>
