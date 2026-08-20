@@ -1,27 +1,91 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
-
+import { ToastContainer, toast } from 'react-toastify'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { authActions } from '../../store/Index'
+ 
 
 function SignIn() {
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [inputs, setInputs] = useState({});
 
-    const change = (e) =>{
-      const {name, value} = e.target
+  const dispatch = useDispatch();
 
-      setInputs({...inputs, [name]:value});
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false)
+
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: ""
+  });
+
+  const change = (e) => {
+    const { name, value } = e.target;
+
+    setInputs({
+      ...inputs,
+      [name]: value
+    });
+  }
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    // Empty fields check
+    if (!inputs.email || !inputs.password) {
+      toast.error("Email and password are required");
+      return;
     }
 
-    const submit = (e) =>{
-      e.preventDefault();
+    try {
 
-      console.log(inputs);
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/signin",
+        {
+          email: inputs.email,
+          password: inputs.password
+        }
+      );
+
+      // console.log("LOGIN SUCCESS:", response.data);
+
+      toast.success(response.data.message);
+      const userId = response.data.user._id;
+      sessionStorage.setItem("id", userId);
+
+      dispatch(authActions.login( ))
+
+      // console.log("USER ID:", userId);
+
+      // Clear inputs
+      setInputs({
+        email: "",
+        password: ""
+      });
+
+      // Go to Todo page
+      setTimeout(() => {
+        navigate("/todo");
+      }, 500);
+
+    } catch (error) {
+
+      console.log(
+        "LOGIN ERROR:",
+        error.response?.data
+      );
+
+      toast.error(
+        error.response?.data?.error || "Login failed"
+      );
     }
-    
-    // const submit = () => {}
+  }
+
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
+
+      <ToastContainer />
 
       <div className="w-full max-w-md border border-gray-200 rounded-xl p-8 shadow-sm">
 
@@ -33,9 +97,12 @@ function SignIn() {
           Sign in to continue to your Todo account
         </p>
 
+        <form
+          className="mt-8"
+          onSubmit={submit}
+        >
 
-        <form className="mt-8"   onSubmit={submit}>
-
+          {/* Email */}
           <div className="mb-5">
 
             <label className="block font-medium mb-2">
@@ -44,7 +111,7 @@ function SignIn() {
 
             <input
               type="email"
-              name='email'
+              name="email"
               value={inputs.email}
               onChange={change}
               placeholder="Enter your email"
@@ -54,15 +121,17 @@ function SignIn() {
           </div>
 
 
-          <div className="relative">
+          {/* Password */}
+          <div className="relative mb-5">
+
             <label className="block font-medium mb-2">
-              Confirm Password
+              Password
             </label>
 
             <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm your password"
-              name='password'
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              name="password"
               value={inputs.password}
               onChange={change}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
@@ -70,15 +139,16 @@ function SignIn() {
 
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
+              {showPassword ? <FiEye /> : <FiEyeOff />}
             </button>
+
           </div>
 
 
-
+          {/* Forgot Password */}
           <div className="flex justify-end mb-6">
 
             <button
@@ -91,6 +161,7 @@ function SignIn() {
           </div>
 
 
+          {/* Sign In */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
@@ -103,7 +174,7 @@ function SignIn() {
 
         <p className="text-center text-gray-500 mt-6">
 
-          Don't have an account?{' '}
+          Don't have an account?{" "}
 
           <Link
             to="/signup"

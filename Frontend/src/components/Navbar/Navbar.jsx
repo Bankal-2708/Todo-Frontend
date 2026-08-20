@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom'
 
 import { GiBookAura } from "react-icons/gi"
 import { FiMenu, FiX } from "react-icons/fi"
+import { useDispatch, useSelector } from 'react-redux'
+import { authActions } from '../../store/Index'
 
 function Navbar() {
+
+  // const isLoggedIn = useSelector((state) => state.isLoggedIn)
 
   const [menuOpen, setMenuOpen] = useState(false)
 
   const menuRef = useRef(null)
 
-   useEffect(() => {
+  useEffect(() => {
 
     const handleClickOutside = (event) => {
 
@@ -31,11 +35,16 @@ function Navbar() {
 
   }, [])
 
-
-   const closeMenu = () => {
+  const closeMenu = () => {
     setMenuOpen(false)
   }
+  const isLoggedIn = useSelector((state)=>state.isLoggedIn);
 
+  const dispatch = useDispatch()
+  const logout = () => {
+     sessionStorage.removeItem("id");
+    dispatch(authActions.logout());
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-gray-100 border-b border-gray-200">
@@ -44,7 +53,6 @@ function Navbar() {
 
         <div className="flex items-center justify-between h-16">
 
- 
           <Link
             to="/"
             onClick={closeMenu}
@@ -54,8 +62,6 @@ function Navbar() {
             todo
           </Link>
 
-
- 
           <div className="hidden md:flex items-center space-x-6">
 
             <Link
@@ -65,7 +71,6 @@ function Navbar() {
               Home
             </Link>
 
-
             <Link
               to="/about"
               className="text-blue-600 font-medium hover:text-blue-800"
@@ -73,34 +78,44 @@ function Navbar() {
               About Us
             </Link>
 
+            {!isLoggedIn && (
+              <>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium"
+                >
+                  Sign Up
+                </Link>
 
-            <Link
-              to="/signup"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium"
-            >
-              Sign Up
-            </Link>
+                <Link
+                  to="/signin"
+                  className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg font-medium"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
 
+            {isLoggedIn && (
+              <>
+                <Link
+                  to="/todo"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium"
+                >
+                  Todo
+                </Link>
 
-            <Link
-              to="/signin"
-              className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg font-medium"
-            >
-              Sign In
-            </Link>
-
-
-            <Link
-              to="/todo"
-              className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium"
-            >
-              Todo
-            </Link>
+                <button
+                  className="px-4 py-2 bg-gray-800 text-white rounded-lg font-medium"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </>
+            )}
 
           </div>
 
-
- 
           <div
             ref={menuRef}
             className="md:hidden"
@@ -112,7 +127,6 @@ function Navbar() {
             >
               {menuOpen ? <FiX /> : <FiMenu />}
             </button>
-
 
             {menuOpen && (
 
@@ -126,7 +140,6 @@ function Navbar() {
                   Home
                 </Link>
 
-
                 <Link
                   to="/about"
                   onClick={closeMenu}
@@ -135,35 +148,46 @@ function Navbar() {
                   About Us
                 </Link>
 
+                {!isLoggedIn && (
+                  <>
+                    <Link
+                      to="/signup"
+                      onClick={closeMenu}
+                      className="px-3 py-2 bg-blue-600 text-white rounded-lg"
+                    >
+                      Sign Up
+                    </Link>
 
-                <Link
-                  to="/todo"
-                  onClick={closeMenu}
-                  className="text-blue-600"
-                >
-                  Todo
-                </Link>
+                    <Link
+                      to="/signin"
+                      onClick={closeMenu}
+                      className="px-3 py-2 border border-blue-600 text-blue-600 rounded-lg"
+                    >
+                      Sign In
+                    </Link>
+                  </>
+                )}
 
+                {isLoggedIn && (
+                  <>
+                    <Link
+                      to="/todo"
+                      onClick={closeMenu}
+                      className="text-blue-600"
+                    >
+                      Todo
+                    </Link>
 
-                <Link
-                  to="/signup"
-                  onClick={closeMenu}
-                  className="px-3 py-2 bg-blue-600 text-white rounded-lg"
-                >
-                  Sign Up
-                </Link>
-
-
-                <Link
-                  to="/signin"
-                  onClick={closeMenu}
-                  className="px-3 py-2 border border-blue-600 text-blue-600 rounded-lg"
-                >
-                  Sign In
-                </Link>
+                    <button
+                      className="px-3 py-2 bg-gray-800 text-white rounded-lg"
+                      onClick={logout}
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
 
               </div>
-
             )}
 
           </div>
