@@ -5,7 +5,21 @@ import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 function SignIn() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  
+    const [inputs, setInputs] = useState({});
+
+    const change = (e) =>{
+      const {name, value} = e.target
+
+      setInputs({...inputs, [name]:value});
+    }
+
+    const submit = (e) =>{
+      e.preventDefault();
+
+      console.log(inputs);
+    }
+    
+    // const submit = () => {}
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
 
@@ -20,7 +34,7 @@ function SignIn() {
         </p>
 
 
-        <form className="mt-8">
+        <form className="mt-8"   onSubmit={submit}>
 
           <div className="mb-5">
 
@@ -30,6 +44,9 @@ function SignIn() {
 
             <input
               type="email"
+              name='email'
+              value={inputs.email}
+              onChange={change}
               placeholder="Enter your email"
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-600"
             />
@@ -45,6 +62,9 @@ function SignIn() {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm your password"
+              name='password'
+              value={inputs.password}
+              onChange={change}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
             />
 

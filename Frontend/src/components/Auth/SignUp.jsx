@@ -1,13 +1,88 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
+import { ToastContainer, toast } from 'react-toastify'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const navigate = useNavigate();
+
+  const [inputs, setInputs] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  })
+
+  const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [showPassword, setShowPassword] = useState(false);
+
+  const change = (e) => {
+    const { name, value } = e.target
+
+    setInputs({
+      ...inputs,
+      [name]: value
+    })
+  }
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    if (inputs.password !== inputs.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/register",
+        {
+          username: inputs.name,
+          email: inputs.email,
+          password: inputs.password
+        }
+      );
+
+      console.log(response.data);
+
+      toast.success(response.data.message);
+
+      setInputs({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      });
+
+      navigate("/signin");
+
+    } catch (error) {
+      console.log("BACKEND ERROR:", error.response?.data);
+
+      if (error.response?.data?.error === "User already exists") {
+        toast.error("User already exists. Please Sign In.");
+
+        setTimeout(() => {
+          navigate("/signin");
+        }, 1000);
+
+        return;
+      }
+
+      toast.error(
+        error.response?.data?.error || "Registration failed"
+      );
+    }
+  };
+
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 sm:mt-0 mt-15">
+
+      {/* Toast */}
+      <ToastContainer />
 
       <div className="w-full max-w-md border border-gray-200 rounded-xl p-8 shadow-sm">
 
@@ -19,9 +94,9 @@ function SignUp() {
           Create your Todo account
         </p>
 
+        <form onSubmit={submit} className="mt-8">
 
-        <form className="mt-8">
-
+          {/* Name */}
           <div className="mb-5">
             <label className="block font-medium mb-2">
               Name
@@ -29,12 +104,15 @@ function SignUp() {
 
             <input
               type="text"
+              name="name"
               placeholder="Enter your name"
+              onChange={change}
+              value={inputs.name}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-600"
             />
           </div>
 
-
+          {/* Email */}
           <div className="mb-5">
             <label className="block font-medium mb-2">
               Email
@@ -42,65 +120,74 @@ function SignUp() {
 
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
+              onChange={change}
+              value={inputs.email}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-600"
             />
           </div>
 
+          {/* Password */}
+          <div className="mb-5">
 
-          <div className='relative'>
-            <div className="mb-5">
+            <label className="block font-medium mb-2">
+              Password
+            </label>
 
-              <label className="block font-medium mb-2">
-                Password
-              </label>
+            <div className="relative">
 
-              <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                onChange={change}
+                value={inputs.password}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
+              />
 
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? <FiEye /> : < FiEyeOff/>}
-                </button>
-
-              </div>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <FiEye /> : <FiEyeOff />}
+              </button>
 
             </div>
           </div>
 
+          {/* Confirm Password */}
+          <div className="mb-5">
 
-          <div className="relative">
             <label className="block font-medium mb-2">
               Confirm Password
             </label>
 
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm your password"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
-            />
+            <div className="relative">
 
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            >
-              {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
-            </button>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                onChange={change}
+                value={inputs.confirmPassword}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-12 outline-none focus:border-blue-600"
+              />
 
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
+              </button>
+
+            </div>
           </div>
 
-
+          {/* Submit */}
           <button
-
             type="submit"
             className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition mt-3"
           >
@@ -109,9 +196,8 @@ function SignUp() {
 
         </form>
 
-
         <p className="text-center text-gray-500 mt-6">
-          Already have an account?{' '}
+          Already have an account?{" "}
 
           <Link
             to="/signin"
@@ -122,7 +208,6 @@ function SignUp() {
         </p>
 
       </div>
-
     </div>
   )
 }
