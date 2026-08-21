@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { authActions } from '../../store/Index'
- 
+
 
 function SignIn() {
 
@@ -52,11 +52,15 @@ function SignIn() {
 
       toast.success(response.data.message);
       const userId = response.data.user._id;
+      const userData = response.data.user;
+      const fullName = userData.username || userData.name || "User";
+
       sessionStorage.setItem("id", userId);
+      sessionStorage.setItem("user", JSON.stringify(userData));
+      sessionStorage.setItem("name", fullName);
+      sessionStorage.setItem("userName", fullName);
 
-      dispatch(authActions.login( ))
-
-      // console.log("USER ID:", userId);
+      dispatch(authActions.login(userData));
 
       // Clear inputs
       setInputs({

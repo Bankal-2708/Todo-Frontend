@@ -16,6 +16,8 @@ function Todo() {
 
   const [array, setArray] = useState([]);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [updateId, setUpdateId] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const chnage = (e) => {
     const { name, value } = e.target;
@@ -26,39 +28,41 @@ function Todo() {
     });
   };
 
+  const fetchTasks = async () => {
+    if (!id) {
+      setArray([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/v2/getTask/${id}`
+      );
+
+      if (Array.isArray(response.data.list)) {
+        setArray(response.data.list);
+      } else {
+        setArray([]);
+      }
+    } catch (error) {
+      console.log("FETCH ERROR:", error.response?.data);
+      setArray([]);
+      toast.error("Unable to fetch tasks");
+    }
+  };
+
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (!id) {
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/v2/getTask/${id}`
-        );
-
-        if (Array.isArray(response.data.list)) {
-          setArray(response.data.list);
-        } else {
-          setArray([]);
-        }
-
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     fetchTasks();
   }, [id]);
 
   const submit = async () => {
-    if (inputs.title === "" || inputs.description === "") {
+    if (inputs.title.trim() === "" || inputs.description.trim() === "") {
       toast.error("Title and description can't be empty!");
       return;
     }
 
     if (!id) {
-      toast.error("Your task is not saved! Please Login");
+      toast.error("Your task is not saved! Please Login");  
       return;
     }
 
@@ -84,31 +88,58 @@ function Todo() {
       });
 
       toast.success("Your task has been saved");
-
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong!");
+      console.log("POST ERROR:", error.response?.data);
+
+      toast.error(
+        error.response?.data?.error ||
+        "Something went wrong!"
+      );
     }
   };
 
-  const deleteTask = async (id) => {
+  const deleteTask = async (taskId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/v2/deleteTask/${id}`
+        `http://localhost:3000/api/v2/deleteTask/${taskId}`
       );
 
-      console.log(response.data);
+      console.log("DELETE:", response.data);
 
       setArray((prev) =>
-        prev.filter((item) => item._id !== id)
+        prev.filter((item) => item._id !== taskId)
       );
 
       toast.success("Task deleted successfully");
-
     } catch (error) {
       console.log("DELETE ERROR:", error.response?.data);
+
+      toast.error(
+        error.response?.data?.error ||
+        "Unable to delete task"
+      );
     }
-  };  
+  };
+
+  const openUpdate = (task) => {
+    setUpdateId(task._id);
+    setSelectedTask(task);
+    setShowUpdate(true);
+  };
+
+  const handleUpdatedTask = (updatedTask) => {
+    setArray((prev) =>
+      prev.map((task) =>
+        task._id === updatedTask._id
+          ? updatedTask
+          : task
+      )
+    );
+
+    setShowUpdate(false);
+    setUpdateId(null);
+    setSelectedTask(null);
+  };
 
   return (
     <>
@@ -180,7 +211,7 @@ function Todo() {
                 name="status"
                 value={inputs.status}
                 onChange={chnage}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 outline-none bg-white focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none bg-white focus:border-blue-500"
               >
                 <option value="pending">Pending</option>
                 <option value="in-progress">In Progress</option>
@@ -217,15 +248,17 @@ function Todo() {
 
             <div className="max-w-4xl mx-auto space-y-4">
 
-              {array.map((item, index) => (
+              {array.map((item) => (
 
                 <TodoCard
+                  key={item._id}
                   item={item}
-                  key={item._id || item.id}
-                  todoId={item._id || item.id}
-                  // index={item._id}
+                  todoId={item._id}
                   deleteTask={deleteTask}
                   setShowUpdate={setShowUpdate}
+                  setUpdateId={setUpdateId}
+                  setSelectedTask={setSelectedTask}
+                  openUpdate={openUpdate}
                 />
 
               ))}
@@ -239,9 +272,13 @@ function Todo() {
       </div>
 
       {showUpdate && (
-        <Update setShowUpdate={setShowUpdate} />
+        <Update
+          setShowUpdate={setShowUpdate}
+          updateId={updateId}
+          selectedTask={selectedTask}
+          onUpdated={handleUpdatedTask}
+        />
       )}
-
     </>
   );
 }

@@ -9,7 +9,7 @@ function Footer() {
 
         <div className="min-h-16 flex items-center justify-center gap-2">
 
-          {/* Logo */}
+           
           <div className="flex items-center gap-2">
             <GiBookAura className="text-orange-800 text-2xl" />
 
@@ -20,7 +20,7 @@ function Footer() {
 
           {/* Copyright */}
           <h3 className="font-bold text-lg">
-            &copy; techcode
+            &copy; VBtechcode
           </h3>
 
         </div>

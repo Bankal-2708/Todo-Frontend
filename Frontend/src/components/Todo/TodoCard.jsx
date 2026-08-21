@@ -2,7 +2,13 @@ import React from "react";
 import { FiEdit2, FiCalendar, FiClock } from "react-icons/fi";
 import { AiFillDelete } from "react-icons/ai";
 
-function TodoCard({ item, todoId, deleteTask, setShowUpdate }) {
+function TodoCard({
+  item,
+  deleteTask,
+  setShowUpdate,
+  setUpdateId,
+  setSelectedTask
+}) {
   const isCompleted = item.status === "completed";
 
   const date = new Date(item.createdAt);
@@ -10,13 +16,19 @@ function TodoCard({ item, todoId, deleteTask, setShowUpdate }) {
   const formattedDate = date.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
-    year: "numeric",
+    year: "numeric"
   });
 
   const formattedTime = date.toLocaleTimeString("en-IN", {
     hour: "2-digit",
-    minute: "2-digit",
+    minute: "2-digit"
   });
+
+  const handleEdit = () => {
+    setUpdateId(item._id);
+    setSelectedTask(item);
+    setShowUpdate(true);
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xl">
@@ -26,19 +38,21 @@ function TodoCard({ item, todoId, deleteTask, setShowUpdate }) {
         <div className="min-w-0 flex-1">
 
           <h3
-            className={`text-xl font-semibold break-words ${isCompleted
+            className={`text-xl font-semibold break-words ${
+              isCompleted
                 ? "line-through text-gray-400"
                 : "text-gray-800"
-              }`}
+            }`}
           >
             {item.title}
           </h3>
 
           <p
-            className={`mt-2 break-words whitespace-normal ${isCompleted
+            className={`mt-2 break-words whitespace-normal ${
+              isCompleted
                 ? "line-through text-gray-400"
                 : "text-gray-500"
-              }`}
+            }`}
           >
             {item.description}
           </p>
@@ -59,27 +73,25 @@ function TodoCard({ item, todoId, deleteTask, setShowUpdate }) {
 
         </div>
 
-        <div className="flex items-center gap-3 ">
+        <div className="flex items-center gap-3">
 
           <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
             {item.status}
           </span>
 
           <button
-            className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 cursor-pointer hover:scale-110
-            hover:shadow-lg transition duration-200"
+            className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 cursor-pointer hover:scale-110 hover:shadow-lg transition duration-200"
             title="Edit Todo"
-            onClick={()=>setShowUpdate(true)}
+            onClick={handleEdit}
           >
             <FiEdit2 size={18} />
-
           </button>
+
           <button
             className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 cursor-pointer hover:scale-110 hover:shadow-lg transition duration-200"
             title="Delete Todo"
-            onClick={()=>deleteTask(todoId)}
+            onClick={() => deleteTask(item._id)}
           >
-
             <AiFillDelete size={18} />
           </button>
 

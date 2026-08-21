@@ -52,27 +52,32 @@ router.post("/addTask", async (req, res) => {
 
 router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { title, description, status, email } = req.body;
+    const { title, description, status } = req.body;
 
-    // if user Find 
-    const existingUser = await User.findOne({ email });
-    if (!existingUser) {
-      return res.status(404).json({
-        error: "User not found"
-      });
-    }
+    const existingTask = await List.findById(req.params.id);
 
-    const list = await List.findByIdAndUpdate(req.params.id, { title, description, status }, {
-      new: true
-    });
-    if (!list) {
+    if (!existingTask) {
       return res.status(404).json({
         error: "Task not found"
       });
     }
+
+    const task = await List.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        status
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
     return res.status(200).json({
       message: "Task updated successfully",
-      list: list
+      list: task
     });
 
   } catch (error) {

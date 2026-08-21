@@ -15,13 +15,14 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     const id = sessionStorage.getItem("id");
 
     if (id) {
-      dispatch(authActions.login());
-    }
+      const savedUser = JSON.parse(sessionStorage.getItem("user") || "null");
+      const savedName = sessionStorage.getItem("name") || sessionStorage.getItem("userName") || "User";
 
+      dispatch(authActions.login(savedUser || { username: savedName }));
+    }
   }, [dispatch]);
 
   return (
