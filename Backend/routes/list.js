@@ -7,10 +7,10 @@ const List = require("../models/list");
 // create task 
 router.post("/addTask", async (req, res) => {
   try {
-    const { title, description, email } = req.body;
+    const { title, description, id } = req.body;
 
     // if user Find 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findById(id);
 
 
     if (!existingUser) {
@@ -86,19 +86,25 @@ router.put("/updateTask/:id", async (req, res) => {
 
 router.delete("/deleteTask/:id", async (req, res) => {
   try {
-    const { email } = req.body;
+    const task = await List.findById(req.params.id);
 
-    // if user Find 
-    const existingUser = await User.findOneAndUpdate({ email }, { $pull: { list: req.params.id } });
-    if (!existingUser) {
+    if (!task) {
       return res.status(404).json({
-        error: "User not found"
+        error: "Task not found"
       });
     }
 
-    await List.findByIdAndDelete(req.params.id).then(() =>
-      res.status(200).json({ message: "Task Deleted Successfully" })
-    );
+    await User.findByIdAndUpdate(task.user, {
+      $pull: {
+        list: task._id
+      }
+    });
+
+    await List.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({
+      message: "Task deleted successfully"
+    });
 
   } catch (error) {
     return res.status(400).json({
@@ -114,14 +120,14 @@ router.get('/getTask/:id', async (req, res) => {
 
     const list = await List.find({
       user: req.params.id
-    }).sort({createdAt : -1}); // sort by createdAt in descending order
+    }).sort({ createdAt: -1 }); // sort by createdAt in descending order
 
     if (list.length !== 0) {
       res.status(200).json({
-      message: "Task fetched successfully",
-      list: list
-    });
-    }else {
+        message: "Task fetched successfully",
+        list: list
+      });
+    } else {
       res.status(404).json({
         message: "No task found"
       });
