@@ -38,7 +38,7 @@ function TodoCard({
         <div className="min-w-0 flex-1">
 
           <h3
-            className={`text-xl font-semibold break-words ${
+            className={`text-xl font-semibold wrap-break-word ${
               isCompleted
                 ? "line-through text-gray-400"
                 : "text-gray-800"
@@ -48,7 +48,7 @@ function TodoCard({
           </h3>
 
           <p
-            className={`mt-2 break-words whitespace-normal ${
+            className={`mt-2 wrap-break-word whitespace-normal ${
               isCompleted
                 ? "line-through text-gray-400"
                 : "text-gray-500"

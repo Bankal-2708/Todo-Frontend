@@ -34,8 +34,19 @@ function SignUp() {
       toast.error("Passwords do not match");
       return;
     }
+    if (inputs.password.length < 8) {
+      toast.error("Password length should be grater than 8");
+      return;
+    }
 
-
+    if (
+      !/[a-z]/.test(inputs.password) ||
+      !/[0-9]/.test(inputs.password) ||
+      !/[!@#$%^&*(),.]/.test(inputs.password)
+    ) {
+      toast.error("Password doesn't match requirements");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/register",
