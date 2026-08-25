@@ -50,7 +50,7 @@ function Update({
       setLoading(true);
 
       const response = await axios.put(
-        `http://localhost:3000/api/v2/updateTask/${updateId}`,
+        `/api/v2/updateTask/${updateId}`,
         {
           title: inputs.title,
           description: inputs.description,

@@ -49,7 +49,7 @@ function SignUp() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/register",
+        "/api/v1/register",
         {
           username: inputs.name,
           email: inputs.email,

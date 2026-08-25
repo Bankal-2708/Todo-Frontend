@@ -36,7 +36,7 @@ function Todo() {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v2/getTask/${id}`
+        `/api/v2/getTask/${id}`
       );
 
       if (Array.isArray(response.data.list)) {
@@ -62,13 +62,13 @@ function Todo() {
     }
 
     if (!id) {
-      toast.error("Your task is not saved! Please Login");  
+      toast.error("Your task is not saved! Please Login");
       return;
     }
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v2/addTask",
+        "/api/v2/addTask",
         {
           title: inputs.title,
           description: inputs.description,
@@ -101,7 +101,7 @@ function Todo() {
   const deleteTask = async (taskId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/v2/deleteTask/${taskId}`
+        `/api/v2/deleteTask/${taskId}`
       );
 
       console.log("DELETE:", response.data);
