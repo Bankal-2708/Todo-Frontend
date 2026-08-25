@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import { ToastContainer, toast } from 'react-toastify'
-import axios from "axios";
+import api from '../../api';
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
@@ -48,7 +48,7 @@ function SignUp() {
       return;
     }
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "/api/v1/register",
         {
           username: inputs.name,

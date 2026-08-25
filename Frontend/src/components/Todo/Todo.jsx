@@ -3,7 +3,7 @@ import { FiPlus } from "react-icons/fi";
 import TodoCard from "./TodoCard";
 import { ToastContainer, toast } from "react-toastify";
 import Update from "./Update";
-import axios from "axios";
+import api from "../../api";
 
 function Todo() {
   const id = sessionStorage.getItem("id");
@@ -35,7 +35,7 @@ function Todo() {
     }
 
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `/api/v2/getTask/${id}`
       );
 
@@ -67,7 +67,7 @@ function Todo() {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "/api/v2/addTask",
         {
           title: inputs.title,
@@ -100,7 +100,7 @@ function Todo() {
 
   const deleteTask = async (taskId) => {
     try {
-      const response = await axios.delete(
+      const response = await api.delete(
         `/api/v2/deleteTask/${taskId}`
       );
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 
 function Update({
@@ -49,7 +49,7 @@ function Update({
     try {
       setLoading(true);
 
-      const response = await axios.put(
+      const response = await api.put(
         `/api/v2/updateTask/${updateId}`,
         {
           title: inputs.title,

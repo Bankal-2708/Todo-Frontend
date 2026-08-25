@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import { ToastContainer, toast } from 'react-toastify'
-import axios from 'axios'
+import api from '../../api'
 import { useDispatch } from 'react-redux'
 import { authActions } from '../../store/Index'
 
@@ -40,7 +40,7 @@ function SignIn() {
 
     try {
 
-      const response = await axios.post(
+      const response = await api.post(
         "/api/v1/signin",
         {
           email: inputs.email,

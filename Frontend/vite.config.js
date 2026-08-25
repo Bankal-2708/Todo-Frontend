@@ -5,10 +5,12 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://backend-gamma-umber-41.vercel.app',
         changeOrigin: true,
+        secure: true,
       },
     },
   },
